@@ -1,104 +1,109 @@
 <template>
-  <div class="post-container">
-    <div v-if="loading" class="loading-spinner">Loading...</div>
+  <div class="post-page-container">
+    <div class="post-container">
+      <div v-if="loading" class="loading-spinner">Loading...</div>
 
-    <div v-else-if="error" class="error-message">
-      {{ error }}
-    </div>
-
-    <div v-else class="post-content">
-      <div class="admin-controls" v-if="isAdminOrAuthor">
-        <button @click="showEditPost" class="edit-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-          </svg>
-          Edit
-        </button>
-        <button @click="confirmDelete" class="delete-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path
-              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-            ></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-          </svg>
-          Delete
-        </button>
+      <div v-else-if="error" class="error-message">
+        {{ error }}
       </div>
 
-      <div class="post-header">
-        <h1>{{ post.title }}</h1>
-
-        <div class="post-meta">
-          <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
-          <span class="author" v-else>Unknown author</span>
-
-          <span class="date" v-if="post.createdDate">
-            {{
-              new Date(post.createdDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            }}
-          </span>
+      <div v-else class="post-content">
+        <div class="admin-controls" v-if="isAdminOrAuthor">
+          <button @click="showEditPost" class="edit-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit
+          </button>
+          <button @click="confirmDelete" class="delete-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              ></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            Delete
+          </button>
         </div>
 
-        <div class="category" v-if="post.category">
-          <span class="category-label">{{ post.category.name }}</span>
+        <div class="post-header">
+          <h1>{{ post.title }}</h1>
+
+          <div class="post-meta">
+            <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
+            <span class="author" v-else>Unknown author</span>
+
+            <span class="date" v-if="post.createdDate">
+              {{
+                new Date(post.createdDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })
+              }}
+            </span>
+          </div>
+
+          <div class="category" v-if="post.category">
+            <span class="category-label">{{ post.category.name }}</span>
+          </div>
+        </div>
+
+        <div class="featured-image-container" v-if="post.imageUrl">
+          <img :src="post.imageUrl" :alt="post.title" class="featured-image" />
+        </div>
+
+        <div class="post-description" v-if="post.description">
+          <p>{{ post.description }}</p>
+        </div>
+
+        <div class="post-body">
+          <div v-html="post.content"></div>
+        </div>
+
+        <div class="post-footer">
+          <router-link to="/" class="back-button">Back to news</router-link>
         </div>
       </div>
 
-      <div class="featured-image-container" v-if="post.imageUrl">
-        <img :src="post.imageUrl" :alt="post.title" class="featured-image" />
-      </div>
 
-      <div class="post-description" v-if="post.description">
-        <p>{{ post.description }}</p>
-      </div>
+      <div class="modal-overlay" v-if="showDeleteModal" @click="cancelDelete">
+        <div class="modal-content" @click.stop>
+          <h3>Confirm Delete</h3>
+          <p>Are you sure you want to delete this post? This action cannot be undone.</p>
 
-      <div class="post-body">
-        <div v-html="post.content"></div>
-      </div>
-
-      <div class="post-footer">
-        <router-link to="/" class="back-button">Back to news</router-link>
-      </div>
-    </div>
-
-    <div class="modal-overlay" v-if="showDeleteModal" @click="cancelDelete">
-      <div class="modal-content" @click.stop>
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete this post? This action cannot be undone.</p>
-
-        <div class="modal-actions">
-          <button @click="cancelDelete" class="cancel-btn">Cancel</button>
-          <button @click="deletePost" class="confirm-delete-btn">Delete</button>
+          <div class="modal-actions">
+            <button @click="cancelDelete" class="cancel-btn">Cancel</button>
+            <button @click="deletePost" class="confirm-delete-btn">Delete</button>
+          </div>
         </div>
       </div>
     </div>
+    <app-footer />
+
   </div>
 </template>
 
@@ -108,9 +113,13 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { server } from '@/utils/helper'
 import type { Post as PostType } from '@/types/news'
+import AppFooter from '@/components/layout/Footer.vue'
 
 export default defineComponent({
   name: 'PostView',
+  components: {
+    AppFooter,
+  },
   setup() {
     const route = useRoute()
     const router = useRouter()
@@ -203,7 +212,7 @@ export default defineComponent({
 
       try {
         currentUser.value = JSON.parse(userStr)
-      } catch (e) {
+      } catch (err) {
         console.error('Error parsing user data')
       }
 
@@ -236,16 +245,12 @@ export default defineComponent({
 
 <style scoped>
 .post-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 30px 20px 60px;
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  min-height: 80vh;
-  height: auto;
-  display: flex;
-  flex-direction: column;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  flex: 1;
 }
 
 .loading-spinner {
@@ -288,6 +293,16 @@ export default defineComponent({
 
 .post-header {
   margin-bottom: 35px;
+}
+
+.post-page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 20px;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
 }
 
 h1 {

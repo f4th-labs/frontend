@@ -61,6 +61,9 @@
         </div>
       </div>
     </div>
+
+    <app-footer />
+
   </div>
 </template>
 
@@ -70,9 +73,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { formatDistanceToNow } from 'date-fns'
 import type { Post } from '@/types/news'
 import placeholderImage from '@/assets/placeholder-image.png'
+import AppFooter from '@/components/layout/Footer.vue'
 
 export default defineComponent({
   name: 'SearchResults',
+  components: {
+    AppFooter,
+  },
   setup() {
     const route = useRoute()
     const router = useRouter()
@@ -193,9 +200,11 @@ export default defineComponent({
 
 <style scoped>
 .search-results-container {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px 20px;
+  min-height: calc(100vh - 60px);
+  background-color: #fff;
 }
 
 .search-header {

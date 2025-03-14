@@ -127,6 +127,25 @@ import { useRoute, useRouter } from 'vue-router'
 import { server } from '@/utils/helper'
 import axios from 'axios'
 
+interface Category {
+  id: string
+  name: string
+}
+
+interface Post {
+  id: string
+  title: string
+  description: string
+  content: string
+  imageUrl: string
+  createdDate: string
+  author: null | {
+    id: string
+    fullName: string
+  }
+  category: null | Category
+}
+
 export default defineComponent({
   name: 'EditPost',
   setup() {
@@ -134,7 +153,7 @@ export default defineComponent({
     const router = useRouter()
     const id = computed(() => route.params.id as string)
 
-    const post = ref({
+    const post = ref<Post>({
       id: '',
       title: '',
       description: '',
@@ -151,7 +170,7 @@ export default defineComponent({
     const errorMsg = ref('')
     const successMsg = ref('')
     const image = ref(null)
-    const categories = ref([])
+    const categories = ref<Category[]>([])
     const categoriesLoading = ref(true)
     const selectedCategory = ref('')
     const categoryError = ref(false)
@@ -292,7 +311,6 @@ export default defineComponent({
   min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .edit-post-card {
@@ -363,8 +381,7 @@ textarea.form-control {
 }
 
 .file-input {
-  padding: 12px 8px;
-  height: 48px;
+  height: 60px;
 }
 
 .file-input::-webkit-file-upload-button {
@@ -487,7 +504,6 @@ textarea.form-control {
 .img-preview {
   max-width: 100%;
   max-height: 200px;
-  margin-top: 8px;
   border-radius: 4px;
   border: 1px solid #e2e8f0;
 }

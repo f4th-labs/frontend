@@ -193,7 +193,7 @@ export default defineComponent({
         successMsg.value = ''
         isLoading.value = true
 
-        const response = await axios.post(`${server.BASE_URL}/users/register`, formData, {
+        await axios.post(`${server.BASE_URL}/users/register`, formData, {
           headers: {
             'Content-Type': 'application/json',
           },

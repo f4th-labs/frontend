@@ -41,26 +41,7 @@
 
     <empty-state v-else :selected-category="selectedCategory" @filter="filterByCategory" />
 
-    <footer class="simple-footer">
-      <div class="footer-content">
-        <p>&copy; {{ new Date().getFullYear() }} News Portal</p>
-        <button @click="scrollToTop" class="back-to-top" aria-label="Back to top">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="18 15 12 9 6 15"></polyline>
-          </svg>
-        </button>
-      </div>
-    </footer>
+    <app-footer />
 
     <div class="modal-overlay" v-if="showLoginModal" @click="closeLoginModal">
       <div class="login-modal" @click.stop>
@@ -95,6 +76,7 @@ import EmptyState from '@/components/home/EmptyState.vue'
 import FeaturedArticles from '@/components/home/FeaturedArticles.vue'
 import LatestNews from '@/components/home/LatestNews.vue'
 import NewsCarousel from '@/components/home/NewsCarousel.vue'
+import AppFooter from '@/components/layout/Footer.vue'
 
 import type { Post, Category } from '@/types/news'
 
@@ -108,6 +90,7 @@ export default defineComponent({
     FeaturedArticles,
     LatestNews,
     EmptyState,
+    AppFooter,
   },
   setup() {
     const route = useRoute()
@@ -287,13 +270,6 @@ export default defineComponent({
       closeLoginModal()
     }
 
-    const scrollToTop = () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      })
-    }
-
     watch(
       () => route.query.refresh,
       () => {
@@ -360,7 +336,6 @@ export default defineComponent({
       closeLoginModal,
       navigateToLogin,
       navigateToRegister,
-      scrollToTop,
     }
   },
 })
@@ -476,26 +451,6 @@ export default defineComponent({
 
 .cancel-btn:hover {
   background-color: #cbd5e0;
-}
-
-.simple-footer {
-  margin-top: 60px;
-  padding: 20px 0;
-  border-top: 1px solid #eaeaea;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.footer-content p {
-  color: #666;
-  margin: 0;
 }
 
 .back-to-top {

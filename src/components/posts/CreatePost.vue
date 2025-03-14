@@ -113,6 +113,11 @@ import { server } from '@/utils/helper'
 import router from '@/router'
 import { defineComponent, ref } from 'vue'
 
+interface Category {
+  id: string
+  name: string
+}
+
 export default defineComponent({
   name: 'CreatePost',
   setup() {
@@ -124,7 +129,7 @@ export default defineComponent({
     const imageError = ref('')
     const errorMsg = ref('')
     const successMsg = ref('')
-    const categories = ref([])
+    const categories = ref<Category[]>([])
     const selectedCategory = ref('')
     const isLoading = ref(false)
     const categoryError = ref(false)
@@ -256,7 +261,6 @@ export default defineComponent({
   min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .create-post-card {

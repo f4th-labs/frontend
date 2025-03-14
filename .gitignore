@@ -14,6 +14,7 @@ dist-ssr
 coverage
 *.local
 .env
+nginx.conf
 
 /cypress/videos/
 /cypress/screenshots/
@@ -27,5 +28,8 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+.vscode
+
 
 *.tsbuildinfo

@@ -27,7 +27,6 @@
         <router-link to="/register" active-class="active" v-if="!isLoggedIn" class="register-link"
           >Register</router-link
         >
-        <!-- Changed to show confirmation popup instead of direct logout -->
         <a href="#" @click.prevent="showLogoutConfirm" v-if="isLoggedIn" class="logout-link"
           >Logout</a
         >
@@ -65,7 +64,7 @@
         <router-link
           to="/create"
           active-class="active"
-          v-if="isLoggedIn"
+          v-if="isAdmin || isAuthor"
           class="create-button"
           title="Create New Post"
         >
@@ -127,6 +126,26 @@ export default defineComponent({
       }
     }
 
+    const currentUser = computed(() => {
+      if (!isLoggedIn.value) return null
+
+      try {
+        const userStr = localStorage.getItem('user')
+        return userStr ? JSON.parse(userStr) : null
+      } catch (e) {
+        console.error('Error parsing user data:', e)
+        return null
+      }
+    })
+
+    const isAdmin = computed(() => {
+      return currentUser.value?.role === 'admin'
+    })
+
+    const isAuthor = computed(() => {
+      return currentUser.value?.role === 'author'
+    })
+
     const showLogoutConfirm = () => {
       showingLogoutModal.value = true
     }
@@ -156,6 +175,9 @@ export default defineComponent({
       showLogoutConfirm,
       cancelLogout,
       confirmLogout,
+      currentUser,
+      isAdmin,
+      isAuthor,
     }
   },
 })
