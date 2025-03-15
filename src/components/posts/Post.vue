@@ -156,7 +156,12 @@ export default defineComponent({
       error.value = ''
 
       try {
-        const response = await axios.get(`${server.BASE_URL}/news/post/${id}`)
+        const response = await axios.get(`${server.BASE_URL}/news/post/${id}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         post.value = response.data
       } catch (err: any) {
         console.error('Error fetching post:', err)
