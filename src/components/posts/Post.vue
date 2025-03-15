@@ -156,18 +156,43 @@ export default defineComponent({
       error.value = ''
 
       try {
-        const response = await axios.get(`${server.BASE_URL}/news/post/${id}`, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        post.value = response.data
-      } catch (err: any) {
-        console.error('Error fetching post:', err)
-        error.value = 'Failed to load the article.'
-      } finally {
+        setTimeout(async () => {
+          try {
+            const response = await axios.get(`${server.BASE_URL}/news/post/${id}`, {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+              },
+            })
+            post.value = response.data
+            loading.value = false
+          } catch (err: any) {
+            console.error('Error fetching post:', err)
+            if (err.response && err.response.status === 401) {
+              const userStr = localStorage.getItem('user')
+              if (!userStr) {
+                router.push({
+                  name: 'Login',
+                  query: {
+                    redirect: route.fullPath,
+                    message: 'Please log in to view this article',
+                  },
+                })
+              } else {
+                error.value = 'Your session may have expired. Please log in again.'
+                localStorage.removeItem('user')
+              }
+            } else {
+              error.value = 'Failed to load the article.'
+            }
+            loading.value = false
+          }
+        }, 100)
+      } catch (err) {
+        console.error('Error in getPost outer try/catch:', err)
         loading.value = false
+        error.value = 'An unexpected error occurred.'
       }
     }
 
