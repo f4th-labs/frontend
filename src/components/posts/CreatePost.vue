@@ -244,22 +244,23 @@ export default defineComponent({
       categoryError.value = false
     }
 
+    const checkFormReset = () => {
+      const lastVisit = localStorage.getItem('createPostFormLastVisit')
+      if (lastVisit && Date.now() - parseInt(lastVisit) > 1000) {
+        resetForm()
+        localStorage.setItem('createPostFormLastVisit', Date.now().toString())
+      }
+    }
+
     onMounted(() => {
       resetForm()
 
-      const originalPath = window.location.pathname
+      localStorage.setItem('createPostFormLastVisit', Date.now().toString())
 
-      const handleNavigation = () => {
-        if (window.location.pathname === originalPath) {
-          console.log('Returning to create post page - resetting form')
-          resetForm()
-        }
-      }
-
-      window.addEventListener('popstate', handleNavigation)
+      window.addEventListener('focus', checkFormReset)
 
       onUnmounted(() => {
-        window.removeEventListener('popstate', handleNavigation)
+        window.removeEventListener('focus', checkFormReset)
       })
     })
 
@@ -281,7 +282,7 @@ export default defineComponent({
       isSubmitting,
       onFileChange,
       createPost,
-      resetForm,
+      checkFormReset,
     }
   },
 })
