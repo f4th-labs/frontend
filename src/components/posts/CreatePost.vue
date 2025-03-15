@@ -111,7 +111,7 @@
 import axios from 'axios'
 import { server } from '@/utils/helper'
 import router from '@/router'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 interface Category {
@@ -245,22 +245,22 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      window.onpopstate = function () {
-        window.location.reload()
+      resetForm()
+
+      const originalPath = window.location.pathname
+
+      const handleNavigation = () => {
+        if (window.location.pathname === originalPath) {
+          console.log('Returning to create post page - resetting form')
+          resetForm()
+        }
       }
 
-      return () => {
-        window.onpopstate = null
-      }
-    })
+      window.addEventListener('popstate', handleNavigation)
 
-    onMounted(() => {
-      if (localStorage.getItem('resetCreatePostForm') === 'true') {
-        resetForm()
-        localStorage.removeItem('resetCreatePostForm')
-      } else {
-        fetchCategories()
-      }
+      onUnmounted(() => {
+        window.removeEventListener('popstate', handleNavigation)
+      })
     })
 
     fetchCategories()
