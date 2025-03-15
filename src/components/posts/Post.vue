@@ -89,7 +89,6 @@
         </div>
       </div>
 
-
       <div class="modal-overlay" v-if="showDeleteModal" @click="cancelDelete">
         <div class="modal-content" @click.stop>
           <h3>Confirm Delete</h3>
@@ -103,7 +102,6 @@
       </div>
     </div>
     <app-footer />
-
   </div>
 </template>
 
@@ -184,7 +182,8 @@ export default defineComponent({
 
         router.push({
           path: '/',
-          query: { message: 'Post deleted successfully' },
+
+          query: { refresh: Date.now().toString(), message: 'Post deleted successfully' },
         })
       } catch (err) {
         console.error('Error deleting post:', err)

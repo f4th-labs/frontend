@@ -64,7 +64,7 @@
         <router-link
           to="/create"
           active-class="active"
-          v-if="isAdmin || isAuthor"
+          v-if="isAdminOrAuthor"
           class="create-button"
           title="Create New Post"
         >
@@ -87,7 +87,6 @@
     </div>
   </nav>
 
-  <!-- Logout Confirmation Modal -->
   <div class="modal-overlay" v-if="showingLogoutModal" @click="cancelLogout">
     <div class="modal-content" @click.stop>
       <h3>Confirm Logout</h3>
@@ -138,12 +137,9 @@ export default defineComponent({
       }
     })
 
-    const isAdmin = computed(() => {
-      return currentUser.value?.role === 'admin'
-    })
-
-    const isAuthor = computed(() => {
-      return currentUser.value?.role === 'author'
+    const isAdminOrAuthor = computed(() => {
+      if (!currentUser.value) return false
+      return currentUser.value.role === 'admin' || currentUser.value.role === 'author'
     })
 
     const showLogoutConfirm = () => {
@@ -176,8 +172,7 @@ export default defineComponent({
       cancelLogout,
       confirmLogout,
       currentUser,
-      isAdmin,
-      isAuthor,
+      isAdminOrAuthor
     }
   },
 })

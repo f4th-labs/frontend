@@ -39,6 +39,7 @@ export default defineComponent({
   background-color: #fff;
   max-width: 100%;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 * {

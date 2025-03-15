@@ -3,7 +3,6 @@
     <h2 class="section-title">Latest News</h2>
     <div class="news-grid">
       <div v-for="(post, index) in posts" :key="`latest-${post.id || index}`" class="news-item">
-        <!-- Replace navigateToPost with emit -->
         <div class="news-item-link" @click="$emit('view-post', post.id)">
           <div class="news-image-container">
             <img
@@ -26,12 +25,6 @@
             </div>
           </div>
         </div>
-        <div class="admin-controls" v-if="isAdmin">
-          <router-link :to="`/edit/${post.id}`" class="edit-btn">Edit</router-link>
-          <button @click.stop.prevent="$emit('delete-post', post.id)" class="delete-btn">
-            Delete
-          </button>
-        </div>
       </div>
 
       <div class="no-latest-news" v-if="posts.length === 0">
@@ -53,10 +46,6 @@ export default defineComponent({
       type: Array as PropType<Post[]>,
       required: true,
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
     formatTimeAgo: {
       type: Function as PropType<(date: string) => string>,
       required: true,
@@ -71,7 +60,7 @@ export default defineComponent({
       placeholderImage,
     }
   },
-  emits: ['delete-post', 'view-post'],
+  emits: ['view-post'],
 })
 </script>
 
@@ -197,40 +186,6 @@ export default defineComponent({
   margin: 0 20px 20px;
   display: flex;
   gap: 10px;
-}
-
-.edit-btn,
-.delete-btn {
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  border-radius: 4px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
-}
-
-.edit-btn {
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ddd;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.edit-btn:hover {
-  background-color: hsla(160, 100%, 37%, 0.1);
-  border-color: hsla(160, 100%, 37%, 1);
-  color: hsla(160, 100%, 37%, 1);
-}
-
-.delete-btn {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-}
-
-.delete-btn:hover {
-  background-color: #fecaca;
 }
 
 .no-latest-news {

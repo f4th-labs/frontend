@@ -1,0 +1,15 @@
+services:
+  fronend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:80'
+    networks:
+      - news-portal
+networks:
+  news-portal:
+    driver: bridge
+

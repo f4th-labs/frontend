@@ -1,5 +1,5 @@
 <template>
-  <div class="bbc-news-homepage">
+  <div class="news-homepage">
     <header-banner :current-date="currentDate" />
 
     <category-nav
@@ -8,38 +8,38 @@
       @filter="filterByCategory"
     />
 
-    <div v-if="filteredPosts.length > 0">
-      <news-carousel
-        :posts="filteredPosts.slice(0, Math.min(5, filteredPosts.length))"
-        :current-slide="currentSlide"
-        @next-slide="nextSlide"
-        @prev-slide="prevSlide"
-        @go-to-slide="goToSlide"
-        @view-post="showLoginPrompt"
-      />
+    <div class="content-wrapper">
+      <div v-if="filteredPosts.length > 0">
+        <news-carousel
+          :posts="filteredPosts.slice(0, Math.min(5, filteredPosts.length))"
+          :current-slide="currentSlide"
+          @next-slide="nextSlide"
+          @prev-slide="prevSlide"
+          @go-to-slide="goToSlide"
+          @view-post="showLoginPrompt"
+        />
 
-      <section-divider />
+        <section-divider />
 
-      <featured-articles
-        :posts="filteredPosts.slice(1, 4)"
-        :format-time-ago="formatTimeAgo"
-        :truncate-text="truncateText"
-        @view-post="showLoginPrompt"
-      />
+        <featured-articles
+          :posts="filteredPosts.slice(1, 4)"
+          :format-time-ago="formatTimeAgo"
+          :truncate-text="truncateText"
+          @view-post="showLoginPrompt"
+        />
 
-      <section-divider />
+        <section-divider />
 
-      <latest-news
-        :posts="filteredPosts.slice(4)"
-        :is-admin="isAdmin"
-        :format-time-ago="formatTimeAgo"
-        :truncate-text="truncateText"
-        @delete-post="deletePost"
-        @view-post="showLoginPrompt"
-      />
+        <latest-news
+          :posts="filteredPosts.slice(4)"
+          :format-time-ago="formatTimeAgo"
+          :truncate-text="truncateText"
+          @view-post="showLoginPrompt"
+        />
+      </div>
+
+      <empty-state v-else :selected-category="selectedCategory" @filter="filterByCategory" />
     </div>
-
-    <empty-state v-else :selected-category="selectedCategory" @filter="filterByCategory" />
 
     <app-footer />
 
@@ -103,7 +103,6 @@ export default defineComponent({
     const selectedCategory = ref('')
     const currentSlide = ref(0)
     const autoplayInterval = ref<number | null>(null)
-    const isAdmin = ref(false)
     const currentDate = ref(
       new Date().toLocaleDateString('en-US', {
         weekday: 'long',
@@ -214,28 +213,6 @@ export default defineComponent({
       selectedCategory.value = categoryId
     }
 
-    const deletePost = async (postId: string) => {
-      if (!confirm('Are you sure you want to delete this post?')) return
-
-      try {
-        await axios.delete(`${server.BASE_URL}/news/delete/${postId}`, {
-          withCredentials: true,
-        })
-        posts.value = posts.value.filter((post) => post.id !== postId)
-      } catch (err) {
-        console.error('Error deleting post:', err)
-        alert('Failed to delete post. Please try again.')
-      }
-    }
-
-    const checkUserRole = () => {
-      const userStr = localStorage.getItem('user')
-      if (userStr) {
-        const user = JSON.parse(userStr)
-        isAdmin.value = user.role === 'admin'
-      }
-    }
-
     const showLoginPrompt = (postId: string) => {
       const userStr = localStorage.getItem('user')
       if (userStr) {
@@ -271,18 +248,19 @@ export default defineComponent({
     }
 
     watch(
-      () => route.query.refresh,
-      () => {
-        fetchPosts()
-      },
-    )
+      () => route.path,
+      (newPath) => {
+        if (newPath === '/' || newPath === '/home') {
+          fetchPosts()
+          fetchCategories()
 
-    watch(
-      () => posts.value,
-      () => {
-        currentSlide.value = 0
-        startAutoplay()
+          currentSlide.value = 0
+          if (autoplayInterval.value) {
+            startAutoplay()
+          }
+        }
       },
+      { immediate: true },
     )
 
     watch(
@@ -298,7 +276,6 @@ export default defineComponent({
     onMounted(() => {
       fetchPosts()
       fetchCategories()
-      checkUserRole()
       startAutoplay()
     })
 
@@ -322,7 +299,6 @@ export default defineComponent({
       error,
       selectedCategory,
       currentSlide,
-      isAdmin,
       currentDate,
       formatTimeAgo,
       truncateText,
@@ -330,7 +306,6 @@ export default defineComponent({
       prevSlide,
       goToSlide,
       filterByCategory,
-      deletePost,
       showLoginModal,
       showLoginPrompt,
       closeLoginModal,
@@ -342,11 +317,18 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.bbc-news-homepage {
+.news-homepage {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
   font-family: ReithSans, Arial, Helvetica, sans-serif;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
 }
 
 .modal-overlay {

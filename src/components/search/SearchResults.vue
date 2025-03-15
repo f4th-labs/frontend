@@ -1,49 +1,52 @@
 <template>
   <div class="search-results-container">
-    <div v-if="isLoading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>Searching...</p>
-    </div>
-
-    <div v-else>
-      <div class="search-header">
-        <h1 v-if="searchQuery">
-          Search results for: <span class="search-query">{{ searchQuery }}</span>
-        </h1>
-        <p class="results-count">{{ results.length }} results found</p>
+    <div class="search-content">
+      <div v-if="isLoading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Searching...</p>
       </div>
 
-      <div v-if="results.length > 0" class="results-grid">
-        <div v-for="post in results" :key="post.id" class="search-result-item">
-          <div class="search-result-link" @click="showLoginPrompt(post.id)">
-            <div class="result-image-container">
-              <img
-                :src="post.imageUrl || placeholderImage"
-                :alt="post.title"
-                class="result-image"
-              />
-              <div class="category-tag" v-if="post.category">{{ post.category.name }}</div>
-            </div>
-            <div class="result-content">
-              <h2>{{ post.title }}</h2>
-              <p class="result-description">{{ truncateText(post.description, 100) }}</p>
-              <div class="result-meta">
-                <span v-if="post.author">{{ post.author.fullName }}</span>
-                <span v-else>Unknown author</span>
-                <span>{{ formatTimeAgo(post.createdDate) }}</span>
+      <div v-else>
+        <div class="search-header">
+          <h1 v-if="searchQuery">
+            Search results for: <span class="search-query">{{ searchQuery }}</span>
+          </h1>
+          <p class="results-count">{{ results.length }} results found</p>
+        </div>
+
+        <div v-if="results.length > 0" class="results-grid">
+          <div v-for="post in results" :key="post.id" class="search-result-item">
+            <div class="search-result-link" @click="showLoginPrompt(post.id)">
+              <div class="result-image-container">
+                <img
+                  :src="post.imageUrl || placeholderImage"
+                  :alt="post.title"
+                  class="result-image"
+                />
+                <div class="category-tag" v-if="post.category">{{ post.category.name }}</div>
+              </div>
+              <div class="result-content">
+                <h2>{{ post.title }}</h2>
+                <p class="result-description">{{ truncateText(post.description, 100) }}</p>
+                <div class="result-meta">
+                  <span v-if="post.author">{{ post.author.fullName }}</span>
+                  <span v-else>Unknown author</span>
+                  <span>{{ formatTimeAgo(post.createdDate) }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div v-else class="no-results">
-        <div class="no-results-icon">🔍</div>
-        <h2>No results found</h2>
-        <p>Try different keywords or browse all news</p>
-        <router-link to="/" class="back-to-home">Back to Home</router-link>
+        <div v-else class="no-results">
+          <div class="no-results-icon">🔍</div>
+          <h2>No results found</h2>
+          <p>Try different keywords or browse all news</p>
+          <router-link to="/" class="back-to-home">Back to Home</router-link>
+        </div>
       </div>
     </div>
+    <app-footer />
 
     <div class="modal-overlay" v-if="showLoginModal" @click="closeLoginModal">
       <div class="login-modal" @click.stop>
@@ -61,9 +64,6 @@
         </div>
       </div>
     </div>
-
-    <app-footer />
-
   </div>
 </template>
 
@@ -202,9 +202,15 @@ export default defineComponent({
 .search-results-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px 20px;
+  padding: 20px;
   min-height: calc(100vh - 60px);
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-content {
+  flex: 1; /* This makes the content expand to fill available space */
 }
 
 .search-header {

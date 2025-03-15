@@ -4,28 +4,49 @@
     <p v-if="selectedCategory">
       No articles in this category. Try another category or view all articles.
     </p>
-    <p v-else>Check back later for updates or create your first article</p>
+    <p v-else-if="isAdminOrAuthor">Check back later for updates or create your first article</p>
+    <p v-else>Check back later for updates</p>
     <div class="empty-actions">
       <button @click="$emit('filter', null)" v-if="selectedCategory" class="view-all-btn">
         View All Articles
       </button>
-      <router-link to="/create" class="create-post-btn">Create Article</router-link>
+      <router-link v-if="isAdminOrAuthor" to="/create" class="create-post-btn">
+        Create Article
+      </router-link>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue'
+import { defineComponent, type PropType, computed } from 'vue'
 
 export default defineComponent({
   name: 'EmptyState',
   props: {
     selectedCategory: {
       type: String as PropType<string | null>,
-      default: null
+      default: null,
+    },
+  },
+  setup() {
+    const isAdminOrAuthor = computed(() => {
+      const userStr = localStorage.getItem('user')
+      if (!userStr) return false
+
+      try {
+        const user = JSON.parse(userStr)
+        return user.role === 'admin' || user.role === 'author'
+      } catch (e) {
+        console.error('Error parsing user data:', e)
+        return false
+      }
+    })
+
+    return {
+      isAdminOrAuthor,
     }
   },
-  emits: ['filter']
+  emits: ['filter'],
 })
 </script>
 
@@ -54,7 +75,8 @@ export default defineComponent({
   gap: 15px;
 }
 
-.create-post-btn, .view-all-btn {
+.create-post-btn,
+.view-all-btn {
   display: inline-block;
   padding: 12px 24px;
   border-radius: 4px;

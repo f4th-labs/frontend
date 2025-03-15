@@ -7,7 +7,6 @@
           :key="`slide-${post.id || index}`"
           class="carousel-slide"
         >
-          <!-- Replace navigateToPost with emit -->
           <div class="slide-link" @click="$emit('view-post', post.id)">
             <div class="image-container">
               <img

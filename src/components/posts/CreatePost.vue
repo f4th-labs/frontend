@@ -111,7 +111,7 @@
 import axios from 'axios'
 import { server } from '@/utils/helper'
 import router from '@/router'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 
 interface Category {
   id: string
@@ -229,6 +229,16 @@ export default defineComponent({
           isSubmitting.value = false
         })
     }
+
+    onMounted(() => {
+      window.onpopstate = function () {
+        window.location.reload()
+      }
+
+      return () => {
+        window.onpopstate = null
+      }
+    })
 
     fetchCategories()
 
