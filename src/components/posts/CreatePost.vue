@@ -111,7 +111,8 @@
 import axios from 'axios'
 import { server } from '@/utils/helper'
 import router from '@/router'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 interface Category {
   id: string
@@ -134,6 +135,7 @@ export default defineComponent({
     const isLoading = ref(false)
     const categoryError = ref(false)
     const isSubmitting = ref(false)
+    const route = useRoute()
 
     const fetchCategories = () => {
       isLoading.value = true
@@ -230,17 +232,36 @@ export default defineComponent({
         })
     }
 
+    const resetForm = () => {
+      title.value = ''
+      description.value = ''
+      content.value = ''
+      image.value = null
+      imageError.value = ''
+      errorMsg.value = ''
+      successMsg.value = ''
+      fetchCategories()
+      categoryError.value = false
+    }
+
     onMounted(() => {
-      window.onpopstate = function () {
-        window.location.reload()
+      resetForm()
+
+      const originalPath = window.location.pathname
+
+      const handleNavigation = () => {
+        if (window.location.pathname === originalPath) {
+          console.log('Returning to create post page - resetting form')
+          resetForm()
+        }
       }
 
-      return () => {
-        window.onpopstate = null
-      }
+      window.addEventListener('popstate', handleNavigation)
+
+      onUnmounted(() => {
+        window.removeEventListener('popstate', handleNavigation)
+      })
     })
-
-    fetchCategories()
 
     return {
       title,
@@ -258,6 +279,7 @@ export default defineComponent({
       isSubmitting,
       onFileChange,
       createPost,
+      resetForm
     }
   },
 })
