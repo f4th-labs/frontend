@@ -111,7 +111,8 @@
 import axios from 'axios'
 import { server } from '@/utils/helper'
 import router from '@/router'
-import { defineComponent, ref, onMounted, useRoute } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 interface Category {
   id: string
