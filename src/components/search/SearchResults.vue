@@ -211,7 +211,7 @@ export default defineComponent({
 }
 
 .search-content {
-  flex: 1; /* This makes the content expand to fill available space */
+  flex: 1;
 }
 
 .search-header {

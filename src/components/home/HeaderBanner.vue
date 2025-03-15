@@ -13,9 +13,9 @@ export default defineComponent({
   props: {
     currentDate: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 })
 </script>
 

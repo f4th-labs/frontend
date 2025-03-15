@@ -80,7 +80,7 @@ export default defineComponent({
   setup() {
     return {
       placeholderImage,
-      getAuthorName
+      getAuthorName,
     }
   },
   methods: {

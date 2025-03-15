@@ -56,11 +56,9 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.name === 'CreatePost') {
-    // Store a flag in localStorage to trigger form reset
     localStorage.setItem('resetCreatePostForm', 'true')
   }
   next()
-
 })
 
 export default router

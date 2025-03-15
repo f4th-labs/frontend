@@ -6,7 +6,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'SectionDivider'
+  name: 'SectionDivider',
 })
 </script>
 
