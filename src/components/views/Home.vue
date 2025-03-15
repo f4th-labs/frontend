@@ -11,7 +11,8 @@
     <div class="content-wrapper">
       <div v-if="filteredPosts.length > 0">
         <news-carousel
-          :posts="filteredPosts.slice(0, Math.min(5, filteredPosts.length))"
+          v-if="carouselPosts.length > 0"
+          :posts="carouselPosts"
           :current-slide="currentSlide"
           @next-slide="nextSlide"
           @prev-slide="prevSlide"
@@ -19,19 +20,21 @@
           @view-post="showLoginPrompt"
         />
 
-        <section-divider />
+        <section-divider v-if="carouselPosts.length > 0" />
 
         <featured-articles
-          :posts="filteredPosts.slice(1, 4)"
+          v-if="featuredPosts.length > 0"
+          :posts="featuredPosts"
           :format-time-ago="formatTimeAgo"
           :truncate-text="truncateText"
           @view-post="showLoginPrompt"
         />
 
-        <section-divider />
+        <section-divider v-if="featuredPosts.length > 0" />
 
         <latest-news
-          :posts="filteredPosts.slice(4)"
+          v-if="latestPosts.length > 0"
+          :posts="latestPosts"
           :format-time-ago="formatTimeAgo"
           :truncate-text="truncateText"
           @view-post="showLoginPrompt"
@@ -114,6 +117,24 @@ export default defineComponent({
 
     const showLoginModal = ref(false)
     const pendingPostId = ref('')
+
+    const carouselPosts = computed(() => {
+      const carouselCount = Math.min(Math.ceil(filteredPosts.value.length / 3), 5)
+      return filteredPosts.value.slice(0, carouselCount)
+    })
+
+    const featuredPosts = computed(() => {
+      const carouselCount = carouselPosts.value.length
+
+      const featuredCount = Math.min(Math.ceil((filteredPosts.value.length - carouselCount) / 2), 3)
+
+      return filteredPosts.value.slice(carouselCount, carouselCount + featuredCount)
+    })
+
+    const latestPosts = computed(() => {
+      const usedCount = carouselPosts.value.length + featuredPosts.value.length
+      return filteredPosts.value.slice(usedCount)
+    })
 
     const filteredPosts = computed(() => {
       if (!selectedCategory.value) return posts.value
@@ -311,6 +332,9 @@ export default defineComponent({
       closeLoginModal,
       navigateToLogin,
       navigateToRegister,
+      carouselPosts,
+      featuredPosts,
+      latestPosts,
     }
   },
 })

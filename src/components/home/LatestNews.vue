@@ -19,8 +19,7 @@
             <p class="news-description">{{ truncateText(post.description, 80) }}</p>
             <p class="news-content-preview">{{ truncateText(post.content, 120) }}</p>
             <div class="story-meta">
-              <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
-              <span class="author" v-else>Unknown</span>
+              <span class="author">{{ getAuthorName(post.author) }}</span>
               <span class="date">{{ formatTimeAgo(post.createdDate) }}</span>
             </div>
           </div>
@@ -38,6 +37,7 @@
 import { defineComponent, type PropType } from 'vue'
 import type { Post } from '../../types/news'
 import placeholderImage from '@/assets/placeholder-image.png'
+import { getAuthorName } from '@/utils/getFullName'
 
 export default defineComponent({
   name: 'LatestNews',
@@ -58,6 +58,7 @@ export default defineComponent({
   setup() {
     return {
       placeholderImage,
+      getAuthorName,
     }
   },
   emits: ['view-post'],

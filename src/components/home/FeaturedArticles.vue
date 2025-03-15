@@ -20,8 +20,7 @@
             <h3>{{ post.title }}</h3>
             <p>{{ truncateText(post.description, 100) }}</p>
             <div class="article-footer">
-              <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
-              <span class="author" v-else>Unknown</span>
+              <span class="author">{{ getAuthorName(post.author) }}</span>
               <span class="date">{{ formatTimeAgo(post.createdDate) }}</span>
             </div>
           </div>
@@ -43,6 +42,7 @@
 import { defineComponent, type PropType } from 'vue'
 import type { Post } from '../../types/news'
 import placeholderImage from '@/assets/placeholder-image.png'
+import { getAuthorName } from '@/utils/getFullName'
 
 export default defineComponent({
   name: 'FeaturedArticles',
@@ -62,7 +62,7 @@ export default defineComponent({
   },
   emits: ['view-post'],
   setup() {
-    return { placeholderImage }
+    return { placeholderImage, getAuthorName }
   },
 })
 </script>

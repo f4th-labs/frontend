@@ -53,8 +53,7 @@
           <h1>{{ post.title }}</h1>
 
           <div class="post-meta">
-            <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
-            <span class="author" v-else>Unknown author</span>
+            <span class="author">{{ getAuthorName(post.author) }}</span>
 
             <span class="date" v-if="post.createdDate">
               {{
@@ -112,6 +111,7 @@ import axios from 'axios'
 import { server } from '@/utils/helper'
 import type { Post as PostType } from '@/types/news'
 import AppFooter from '@/components/layout/Footer.vue'
+import { getAuthorName } from '@/utils/getFullName'
 
 export default defineComponent({
   name: 'PostView',
@@ -197,6 +197,8 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      window.scrollTo(0, 0)
+
       const userStr = localStorage.getItem('user')
       if (!userStr) {
         router.push({
@@ -237,6 +239,7 @@ export default defineComponent({
       cancelDelete,
       deletePost,
       showEditPost,
+      getAuthorName,
     }
   },
 })

@@ -29,8 +29,7 @@
                 <h2>{{ post.title }}</h2>
                 <p class="result-description">{{ truncateText(post.description, 100) }}</p>
                 <div class="result-meta">
-                  <span v-if="post.author">{{ post.author.fullName }}</span>
-                  <span v-else>Unknown author</span>
+                  <span class="author">{{ getAuthorName(post.author) }}</span>
                   <span>{{ formatTimeAgo(post.createdDate) }}</span>
                 </div>
               </div>
@@ -74,6 +73,8 @@ import { formatDistanceToNow } from 'date-fns'
 import type { Post } from '@/types/news'
 import placeholderImage from '@/assets/placeholder-image.png'
 import AppFooter from '@/components/layout/Footer.vue'
+import { server } from '@/utils/helper'
+import { getAuthorName } from '@/utils/getFullName'
 
 export default defineComponent({
   name: 'SearchResults',
@@ -105,10 +106,9 @@ export default defineComponent({
     const performSearch = async () => {
       isLoading.value = true
       results.value = []
-
       try {
         const response = await fetch(
-          `http://localhost:5001/news/search?q=${encodeURIComponent(searchQuery.value)}`,
+          `${server.BASE_URL}/news/search?q=${encodeURIComponent(searchQuery.value)}`,
           {
             method: 'GET',
             credentials: 'include',
@@ -193,6 +193,7 @@ export default defineComponent({
       closeLoginModal,
       navigateToLogin,
       navigateToRegister,
+      getAuthorName,
     }
   },
 })

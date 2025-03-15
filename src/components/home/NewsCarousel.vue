@@ -22,8 +22,7 @@
               <h2 class="slide-title">{{ post.title }}</h2>
               <p class="slide-description">{{ post.description }}</p>
               <div class="story-meta">
-                <span class="author" v-if="post.author">{{ post.author.fullName }}</span>
-                <span class="author" v-else>Unknown author</span>
+                <span class="author">{{ getAuthorName(post.author) }}</span>
                 <span class="date">{{ formatTimeAgo(post.createdDate) }}</span>
               </div>
             </div>
@@ -40,11 +39,7 @@
       >
         ❮
       </button>
-      <button
-        class="side-control next"
-        @click.prevent="handleNextSlide"
-        aria-label="Next slide"
-      >
+      <button class="side-control next" @click.prevent="handleNextSlide" aria-label="Next slide">
         ❯
       </button>
     </div>
@@ -67,6 +62,7 @@ import { defineComponent, type PropType } from 'vue'
 import type { Post } from '../../types/news'
 import { formatDistanceToNow } from 'date-fns'
 import placeholderImage from '@/assets/placeholder-image.png'
+import { getAuthorName } from '@/utils/getFullName'
 
 export default defineComponent({
   name: 'NewsCarousel',
@@ -84,6 +80,7 @@ export default defineComponent({
   setup() {
     return {
       placeholderImage,
+      getAuthorName
     }
   },
   methods: {
