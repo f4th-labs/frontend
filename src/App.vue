@@ -2,7 +2,7 @@
   <div id="app">
     <nav-bar />
 
-    <router-view v-slot="{ Component }">
+    <router-view :key="$route.fullPath" v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
       </keep-alive>
