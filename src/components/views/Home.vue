@@ -11,7 +11,7 @@
     <div class="content-wrapper">
       <div v-if="filteredPosts.length > 0">
         <news-carousel
-          v-if="carouselPosts.length > 0"
+          v-if="carouselPosts.length > 0 && currentSlide < carouselPosts.length"
           :posts="carouselPosts"
           :current-slide="currentSlide"
           @next-slide="nextSlide"
@@ -160,10 +160,13 @@ export default defineComponent({
     }
 
     const maxCarouselSlides = computed(() => {
-      return Math.min(5, filteredPosts.value.length)
+      if (!carouselPosts.value || carouselPosts.value.length === 0) return 0
+      return carouselPosts.value.length
     })
 
     const nextSlide = () => {
+      if (maxCarouselSlides.value === 0) return
+
       if (currentSlide.value < maxCarouselSlides.value - 1) {
         currentSlide.value++
       } else {
@@ -172,6 +175,8 @@ export default defineComponent({
     }
 
     const prevSlide = () => {
+      if (maxCarouselSlides.value === 0) return
+
       if (currentSlide.value > 0) {
         currentSlide.value--
       } else {
@@ -180,6 +185,8 @@ export default defineComponent({
     }
 
     const goToSlide = (index: number) => {
+      if (index < 0 || index >= maxCarouselSlides.value) return
+
       currentSlide.value = index
 
       if (autoplayInterval.value) {
@@ -190,11 +197,15 @@ export default defineComponent({
     const startAutoplay = () => {
       clearAutoplay()
 
+      if (maxCarouselSlides.value === 0) return
+
       autoplayInterval.value = window.setInterval(() => {
-        if (currentSlide.value < maxCarouselSlides.value - 1) {
-          currentSlide.value++
-        } else {
-          currentSlide.value = 0
+        if (maxCarouselSlides.value > 0) {
+          if (currentSlide.value < maxCarouselSlides.value - 1) {
+            currentSlide.value++
+          } else {
+            currentSlide.value = 0
+          }
         }
       }, 5000)
     }
@@ -302,9 +313,13 @@ export default defineComponent({
 
     watch(
       () => posts.value,
-      () => {
-        currentSlide.value = 0
-        startAutoplay()
+      (newPosts) => {
+        if (newPosts && newPosts.length > 0) {
+          currentSlide.value = 0
+          startAutoplay()
+        } else {
+          clearAutoplay()
+        }
       },
     )
 

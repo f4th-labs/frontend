@@ -197,17 +197,48 @@ export default defineComponent({
       errorMsg.value = ''
 
       try {
-        const response = await axios.get(`${server.BASE_URL}/news/post/${id.value}`)
-        post.value = response.data
+        setTimeout(async () => {
+          try {
+            const response = await axios.get(`${server.BASE_URL}/news/post/${id.value}`, {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
 
-        if (post.value.category && post.value.category.id) {
-          selectedCategory.value = post.value.category.id
-        }
+            post.value = response.data
+
+            if (post.value.category && post.value.category.id) {
+              selectedCategory.value = post.value.category.id
+            }
+          } catch (error: any) {
+            console.error('Error fetching post:', error)
+
+            if (error.response && error.response.status === 401) {
+              const userStr = localStorage.getItem('user')
+              if (!userStr) {
+                router.push({
+                  name: 'Login',
+                  query: {
+                    redirect: route.fullPath,
+                    message: 'Please log in to edit this post',
+                  },
+                })
+              } else {
+                errorMsg.value = 'Your session may have expired. Please log in again.'
+                localStorage.removeItem('user')
+              }
+            } else {
+              errorMsg.value = 'Failed to load post data'
+            }
+          } finally {
+            loading.value = false
+          }
+        }, 100)
       } catch (error) {
-        console.error('Error fetching post:', error)
-        errorMsg.value = 'Failed to load post data'
-      } finally {
+        console.error('Error in getPost outer try/catch:', error)
         loading.value = false
+        errorMsg.value = 'An unexpected error occurred.'
       }
     }
 
@@ -272,9 +303,39 @@ export default defineComponent({
       }
     }
 
+    watch(
+      () => route.params.id,
+      (newId) => {
+        if (newId) {
+          post.value = {
+            id: '',
+            title: '',
+            description: '',
+            content: '',
+            imageUrl: '',
+            createdDate: '',
+            author: null,
+            category: null,
+          }
+          selectedCategory.value = ''
+          getPost()
+        }
+      },
+    )
+
     onMounted(() => {
+      window.scrollTo(0, 0)
+
       const userStr = localStorage.getItem('user')
       if (!userStr) {
+        router.push('/login')
+        return
+      }
+
+      try {
+        currentUser.value = JSON.parse(userStr)
+      } catch (err) {
+        console.error('Error parsing user data')
         router.push('/login')
         return
       }
