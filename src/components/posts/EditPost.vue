@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from 'vue'
+import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { server } from '@/utils/helper'
 import axios from 'axios'
@@ -130,6 +130,11 @@ import axios from 'axios'
 interface Category {
   id: string
   name: string
+}
+
+interface User {
+  id: string
+  role: string
 }
 
 interface Post {
@@ -174,6 +179,7 @@ export default defineComponent({
     const categoriesLoading = ref(true)
     const selectedCategory = ref('')
     const categoryError = ref(false)
+    const currentUser = ref<User | null>(null)
 
     const navigate = () => {
       router.go(-1)
@@ -359,6 +365,7 @@ export default defineComponent({
       navigate,
       onFileChange,
       editPost,
+      currentUser,
     }
   },
 })
