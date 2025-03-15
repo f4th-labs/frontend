@@ -246,21 +246,6 @@ export default defineComponent({
 
     onMounted(() => {
       resetForm()
-
-      const originalPath = window.location.pathname
-
-      const handleNavigation = () => {
-        if (window.location.pathname === originalPath) {
-          console.log('Returning to create post page - resetting form')
-          resetForm()
-        }
-      }
-
-      window.addEventListener('popstate', handleNavigation)
-
-      onUnmounted(() => {
-        window.removeEventListener('popstate', handleNavigation)
-      })
     })
 
     fetchCategories()
