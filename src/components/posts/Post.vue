@@ -162,7 +162,6 @@ export default defineComponent({
               withCredentials: true,
               headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
               },
             })
             post.value = response.data
