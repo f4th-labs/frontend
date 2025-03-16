@@ -109,20 +109,7 @@ export default defineComponent({
         }
       } catch (error: any) {
         console.error('Login error:', error)
-
-        if (error.response) {
-          if (error.response.status === 401) {
-            errorMsg.value = 'Invalid email or password'
-          } else if (error.response.data && error.response.data.message) {
-            errorMsg.value = error.response.data.message
-          } else {
-            errorMsg.value = 'An error occurred during login'
-          }
-        } else if (error.request) {
-          errorMsg.value = 'Server is not responding. Please try again later.'
-        } else {
-          errorMsg.value = 'An error occurred. Please try again.'
-        }
+        errorMsg.value = 'Invalid email or password'
       } finally {
         isLoading.value = false
       }
