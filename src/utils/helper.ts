@@ -1,3 +1,3 @@
 export const server = {
-  BASE_URL: 'https://api.f4th.dev',
+  BASE_URL: 'http://localhost:5001',
 }
