@@ -195,7 +195,7 @@ export default defineComponent({
       formData.append('title', title.value)
       formData.append('description', description.value)
       formData.append('content', content.value)
-      formData.append('category', selectedCategory.value)
+      formData.append('categoryId', selectedCategory.value)
 
       if (image.value) {
         formData.append('image', image.value)
